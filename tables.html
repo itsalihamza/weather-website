@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Tables</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for the profile popup */
+        .profile-popup {
+            display: none; /* Hidden by default */
+            position: absolute;
+            right: 10px;
+            top: 80px;
+            width: 250px;
+            background-color: #2d3748;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            z-index: 1000;
+        }
+
+        .profile-popup.show {
+            display: block; /* Show popup when class is added */
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: #2d3748;
+            z-index: 50;
+            transform: translateX(-100%); /* Hidden by default on mobile */
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.open {
+            transform: translateX(0); /* Show sidebar when open */
+        }
+
+        /* Media query for larger screens */
+        @media (min-width: 1024px) {
+            .sidebar {
+                transform: none; /* Sidebar is always visible on desktop */
+                width: 20%; /* Sidebar width for desktop */
+            }
+            .content {
+                margin-left: 20%;
+            }
+        }
+
+        /* Styles for hamburger button */
+        .hamburger {
+            display: block;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: #2d3748;
+            margin: 5px;
+            transition: 0.4s;
+        }
+
+        @media (min-width: 1024px) {
+            .hamburger {
+                display: none; /* Hide hamburger on desktop */
+            }
+        }
+
+        .content {
+            padding: 1rem;
+            height: 100vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Main container -->
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 bg-gray-800 text-white p-5 space-y-8" id="mobile-sidebar">
+            <div class="flex flex-row items-center gap-x-4">
+                <img src="icon.png" alt="Profile Icon" class="rounded-full w-16 h-auto">
+            <h1 class="text-2xl font-bold mb-6">WeatherX</h1>
+            </div>
+            <ul>
+                <li class="mb-4"><a href="index.html" class="block p-2 bg-gray-700 rounded hover:bg-gray-600">Dashboard</a></li>
+                <li><a href="tables.html" class="block p-2 bg-gray-700 rounded hover:bg-gray-600">Tables</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main content -->
+        <div class="content flex-1 p-8">
+            <!-- Search bar and user profile -->
+            <div class="flex justify-between items-center mb-8 gap-2">
+                <div class="flex">
+                    <input type="text" id="city-input" class="border border-gray-300 p-2 rounded-l-md" placeholder="Enter city">
+                    <button id="search-btn" class="bg-gray-700 text-white px-4 py-2 rounded-r-md hover:bg-gray-800">Get Weather</button>
+                </div>
+
+                <!-- Profile Icon -->
+                <div class="relative hidden lg:block">
+                    <img src="User.jpg" id="profile-toggle-btn" alt="Profile Icon" class="rounded-full cursor-pointer w-16 h-16">
+                    
+                    <!-- Profile Popup -->
+                    <div id="profile-popup" class="profile-popup">
+                        <div class="flex justify-center">
+                        </div>
+                        <div class="text-center">
+                            <h2 class="text-gray-100 text-lg font-semibold">Ali Hamza</h2>
+                            <p class="text-gray-100">Email: alihamza@gmail.com</p>
+                            <p class="text-gray-100">Phone: 03305933604</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hamburger Menu for Mobile -->
+                <div class="hamburger lg:hidden" id="hamburger-btn">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+
+            <div class="bg-white px-4 sm:px-6 py-6 rounded-lg shadow-md mb-8">
+                <h3 class="text-xl font-semibold mb-4">5-Day Temperature Forecast</h3>
+                
+                <!-- Filter Buttons -->
+                <div class="mb-4 flex flex-wrap gap-x-4">
+                    <button id="sort-asc-btn" class="bg-gray-700 text-white px-4 py-2 mb-2 rounded hover:bg-gray-800">Sort Ascending</button>
+                    <button id="sort-desc-btn" class="bg-gray-700 text-white px-4 py-2 mb-2 rounded hover:bg-gray-800">Sort Descending</button>
+                    <button id="filter-rain-btn" class="bg-gray-700 text-white px-4 py-2 mb-2 rounded hover:bg-gray-800">Show Rainy Days</button>
+                    <button id="max-temp-btn" class="bg-gray-700 text-white px-4 py-2 mb-2 rounded hover:bg-gray-800">Show Hottest Day</button>
+                </div>
+                
+                
+                <!-- Weather Table -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="px-2 sm:px-4 py-2">Date</th>
+                                <th class="px-2 sm:px-4 py-2">Time</th>
+                                <th class="px-2 sm:px-4 py-2">Temperature (°C)</th>
+                                <th class="px-2 sm:px-4 py-2">Weather Condition</th>
+                            </tr>
+                        </thead>
+                        <tbody id="weather-table-body">
+                        <!-- Weather data will be injected here -->
+                    </tbody>
+                </table>
+                
+                <!-- Pagination -->
+                <div class="mt-4 flex justify-between">
+                    <button id="prev-btn" class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800">Previous</button>
+                    <button id="next-btn" class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800">Next</button>
+                </div>
+            </div>
+            
+            <!-- Chatbot Section -->
+            <div class="bg-white p-6 rounded-lg shadow-lg animate-fade-in">
+                <h3 class="text-xl font-semibold mb-4 text-gray-700">Chat with WeatherBot</h3>
+                <div id="chat-output" class="border border-gray-300 p-4 h-64 overflow-y-auto mb-4 rounded-lg bg-gray-50 shadow-inner"></div>
+                <div class="flex">
+                    <input type="text" id="chat-input" class="border border-gray-300 p-2 flex-1 rounded-l-lg focus:ring-2 focus:ring-blue-400 transition ease-in-out" placeholder="Type a message...">
+                    <button id="chat-send-btn" class="bg-gray-700 text-white px-4 py-2 rounded-r-md hover:bg-gray-800">Send</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar on mobile
+        document.getElementById('hamburger-btn').addEventListener('click', function() {
+            document.getElementById('mobile-sidebar').classList.toggle('open');
+        });
+        
+        
+    </script>
+
+    <!-- JavaScript for Weather and Chatbot API -->
+    <script src="tables.js"></script>
+</body>
+</html>
