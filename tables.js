@@ -1,12 +1,10 @@
-// API keys
 const openWeatherApiKey = 'b040fe1caf8668e6f81d888294c45441';
 const geminiApiKey = 'AIzaSyBwql1EiApl9uF-fvbJDvbXLg9mK93D3Vk';
 
-// Weather Data and Pagination
 let weatherData = [];
 let filteredData = [];
 let currentPage = 1;
-const entriesPerPage = 8; // Show 8 entries per page (for 8 intervals of 3 hours)
+const entriesPerPage = 8; 
 
 // Fetch weather data for a specific city
 document.getElementById('search-btn').addEventListener('click', () => {
@@ -16,13 +14,12 @@ document.getElementById('search-btn').addEventListener('click', () => {
         .then(data => {
             weatherData = processWeatherData(data.list);
             filteredData = [...weatherData]; // Clone the data for filtering
-            currentPage = 1; // Reset pagination
+            currentPage = 1; 
             displayWeatherTable();
         })
         .catch(error => console.error('Error fetching weather data:', error));
 });
 
-// Process weather data (keeping 3-hour intervals but grouping by day)
 function processWeatherData(dataList) {
     const result = dataList.map(item => ({
         date: new Date(item.dt_txt).toLocaleDateString(),
@@ -33,7 +30,6 @@ function processWeatherData(dataList) {
     return result;
 }
 
-// Display weather data in table with pagination (8 entries per page)
 function displayWeatherTable() {
     const start = (currentPage - 1) * entriesPerPage;
     const end = start + entriesPerPage;
@@ -61,7 +57,7 @@ document.getElementById('sort-asc-btn').addEventListener('click', () => {
 // Sorting by Temperature (Descending)
 document.getElementById('sort-desc-btn').addEventListener('click', () => {
     filteredData.sort((a, b) => b.temp - a.temp);
-    currentPage = 1; // Reset to first page
+    currentPage = 1; 
     displayWeatherTable();
 });
 
