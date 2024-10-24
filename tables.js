@@ -17,7 +17,7 @@ document.getElementById('search-btn').addEventListener('click', () => {
             currentPage = 1; 
             displayWeatherTable();
         })
-        .catch(error => console.error('Error fetching weather data:', error));
+        .catch(error => alert('Error fetching weather data!'));
 });
 
 function processWeatherData(dataList) {
@@ -91,7 +91,7 @@ document.getElementById('next-btn').addEventListener('click', () => {
     }
 });
 
-// Chatbot Interaction (unchanged from your previous code)
+// Chatbot Interaction 
 document.getElementById('chat-send-btn').addEventListener('click', () => {
     const message = document.getElementById('chat-input').value;
     document.getElementById('chat-input').value = '';
