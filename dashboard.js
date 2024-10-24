@@ -69,7 +69,7 @@ function getWeatherData(city) {
         .then(data => {
             updateWeatherInfo(data);
         })
-        .catch(error => console.error('Error fetching weather data:', error));
+        .catch(error => alert('Error fetching weather data!'));
 }
 
 // Fetch weather forecast by city name
@@ -81,7 +81,7 @@ function getWeatherForecast(city) {
         .then(data => {
             updateWeatherForecastCharts(data);
         })
-        .catch(error => console.error('Error fetching forecast data:', error));
+        .catch(error => alert('Error fetching forecast data!'));
 }
 
 // Update weather information on the page
