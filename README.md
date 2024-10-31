@@ -7,6 +7,9 @@ WeatherX Dashboard is a fully responsive weather application that allows users t
 
 The application is built using HTML, CSS (Tailwind CSS), JavaScript, the OpenWeather API for fetching real-time weather data, Chart.js for data visualization, and integrates a chatbot powered by the Google Gemini API.
 
+## Live Demo
+[Live Demo]( https://itsalihamza.github.io/weather-website/)
+
 ## Features
 
 - **Current Weather Data**: Displays current weather conditions such as temperature, humidity, wind speed, and weather description for any searched city.
